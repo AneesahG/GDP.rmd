@@ -27,18 +27,12 @@ gdp2 <- na.omit(gdp)%>%
   filter(Year>=1960)
 ```
 
-Did some data cleaning in order to prepare the observations to transformed into time series.
-
+#' Did some data cleaning in order to prepare the observations to transformed into time series.
 filtered for the three countries of interest and their wanted observation - Debt to GDP Ratio
-
 removed unneeded columns; leaving just the country, year and Debt to GDP Ratio columns remaining.
-
 took all the years columns and transposed them into rows
-
 finally removed any NAs from the data set to avoid any potential errors with the ts function in r
-
 we filtered the years to 1945 and onwards because we believe that several global events that happened before this time that will have extreme effects on the ratio ie) Slavery Abolition, industrial revaluation, WW1, great depression and WW2.
-
 
 ```{r warning = FALSE, message = FALSE}
 library(ggplot2)
@@ -82,7 +76,7 @@ US <- gdp2 %>%
 US <- ts(US$`Debt to GDP Ratio`,start = 1960, end = 2020) 
 ```
 
-A low debt-to-GDP ratio indicates an economy that produces and sells goods and services is sufficient to pay back debts without incurring further debt.
+#' A low debt-to-GDP ratio indicates an economy that produces and sells goods and services is sufficient to pay back debts without incurring further debt.
 
 ```{r warning = FALSE, message = FALSE}
 library(tseries)
@@ -137,20 +131,14 @@ adf.test(UK, k = 0)
 adf.test(US, k = 0)
 ```
 
-key points:
-
-Canada has slight upwards trend, there is some variation in the, however, it does pass the Augmented Dickey-Fuller Test and Canada dataset is stationary. We will perform some transformations to reduce the present variability 
-
+#' Canada has slight upwards trend, there is some variation in the, however, it does pass the Augmented Dickey-Fuller Test and Canada dataset is stationary. We will perform some transformations to reduce the present variability 
 Canada has a log normal distribution
-
 UK has downwards trend, there is variation in the observations
- 
-US has upwards trend, there is variation in the observations
- 
-UK and US ratios are non stationary and must be transformed before model fitting.
+ US has upwards trend, there is variation in the observations
+ UK and US ratios are non stationary and must be transformed before model fitting.
 
 
-Based on the plot above we can see that UK debt to gdp ratio has a downwards overtime and while both the US and Canada have an upwards trend overtime.
+#' Based on the plot above we can see that UK debt to gdp ratio has a downwards overtime and while both the US and Canada have an upwards trend overtime.
 
 the variation in the ratios for all three countries is very apparent and we will need to perform transformations to stabilize the variance and the mean as well as remove the trends that are present.
 
@@ -162,7 +150,7 @@ lambda <- BoxCox.lambda(CA)
 print(lambda)
 ```
 
-using the box cox method we are able to determine a power transformation needed to stablize the variance and mean.
+#' using the box cox method we are able to determine a power transformation needed to stablize the variance and mean.
 the power transformation reduced the variation in the data more than the log transformation
 
 after taking the first diff we still see some trend present in the data the second difference is needed to remove this 
@@ -197,7 +185,7 @@ auto.arima(CA.transformed)
 ```
 
 
-options
+#' options
 arima(0,1,3) does not pass normality test
 arima(2,1,0) does not pass normality test
 arima(1,1,2) based on the eacf plot 
@@ -217,7 +205,7 @@ lambda1 <- BoxCox.lambda(UK)
 print(lambda1)
 ```
 
-the power transformation has a better result on stability of the variance than the log transformation.
+#' the power transformation has a better result on stability of the variance than the log transformation.
 
 # ```{r warning = FALSE, message = FALSE}
 # UK.transformed <- diff((diff(log(UK))))
@@ -303,7 +291,7 @@ qqnorm(residuals(s))
 qqline(residuals(s))
 
 
-# the residual have right skewed distribution 
+#' the residual has right skewed distribution 
 ```
 
 ```{r}
@@ -316,7 +304,7 @@ auto.arima(US.transformed2)
 ```
 
 
-the log transformation was able to reduce the reduce the variability in data much more than the power transformation
+#' the log transformation was able to reduce the reduce the variability in data much more than the power transformation
 
 based on eacf plot the best model is arima(0,2,1)
 
@@ -331,7 +319,7 @@ based on eacf plot the best model is arima(0,2,1)
 # 
 # ```
 
-# the power transformation did not handle the variation in data as well as the log transformation did
+#' the power transformation did not handle the variation in data as well as the log transformation did
 
 
 
@@ -352,7 +340,7 @@ pacf(CA.transformed)
 
 
 ```
-based on the results of the acf, pacf and eacf there are few possible models we can use here.
+#' based on the results of the acf, pacf and eacf there are few possible models we can use here.
 ARIMA(1, 1, 2)
 ARIMA(2, 1, 3)
 ARIMA(3, 1, 3)
@@ -403,7 +391,7 @@ acf(US.transformed)
 pacf(US.transformed)
 eacf(US.transformed)
 ```
-based on the eacf an appropriate mode would ARIMA(0,0,0)
+#' based on the eacf an appropriate mode would ARIMA(0,0,0)
 
 ```{r warning = FALSE, message = FALSE}
 library(TSA)
@@ -470,4 +458,4 @@ americatimeseriesforecast <- forecast(US.transformed2, h= (5))
 plot(canadatimeseriesforecast, main = "American GDP-Debt Ratio with 5 Year Forecast", xlab= "Year", ylab="GDP to Debt Ratio")
 
 ```
-thank you!
+#' thank you!
