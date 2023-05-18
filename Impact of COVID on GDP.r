@@ -28,11 +28,11 @@ gdp2 <- na.omit(gdp)%>%
 ```
 
 #' Did some data cleaning in order to prepare the observations to transformed into time series.
-filtered for the three countries of interest and their wanted observation - Debt to GDP Ratio
-removed unneeded columns; leaving just the country, year and Debt to GDP Ratio columns remaining.
-took all the years columns and transposed them into rows
-finally removed any NAs from the data set to avoid any potential errors with the ts function in r
-we filtered the years to 1945 and onwards because we believe that several global events that happened before this time that will have extreme effects on the ratio ie) Slavery Abolition, industrial revaluation, WW1, great depression and WW2.
+#'filtered for the three countries of interest and their wanted observation - Debt to GDP Ratio
+#' removed unneeded columns; leaving just the country, year and Debt to GDP Ratio columns remaining.
+#' took all the years columns and transposed them into rows
+#' finally removed any NAs from the data set to avoid any potential errors with the ts function in r
+#' we filtered the years to 1945 and onwards because we believe that several global events that happened before this time that will have extreme effects on the ratio ie) Slavery Abolition, industrial revaluation, WW1, great depression and WW2.
 
 ```{r warning = FALSE, message = FALSE}
 library(ggplot2)
@@ -132,18 +132,18 @@ adf.test(US, k = 0)
 ```
 
 #' Canada has slight upwards trend, there is some variation in the, however, it does pass the Augmented Dickey-Fuller Test and Canada dataset is stationary. We will perform some transformations to reduce the present variability 
-Canada has a log normal distribution
-UK has downwards trend, there is variation in the observations
- US has upwards trend, there is variation in the observations
- UK and US ratios are non stationary and must be transformed before model fitting.
+#' Canada has a log normal distribution
+#' UK has downwards trend, there is variation in the observations
+#' US has upwards trend, there is variation in the observations
+#' UK and US ratios are non stationary and must be transformed before model fitting.
 
 
 #' Based on the plot above we can see that UK debt to gdp ratio has a downwards overtime and while both the US and Canada have an upwards trend overtime.
 
-the variation in the ratios for all three countries is very apparent and we will need to perform transformations to stabilize the variance and the mean as well as remove the trends that are present.
+#'the variation in the ratios for all three countries is very apparent and we will need to perform transformations to stabilize the variance and the mean as well as remove the trends that are present.
 
-it is interesting to note that Canada and US have similar Debt to gdp ratio distribution 
-explanations for this are strong economic relationship ie (trade and investments) between the two countries, geographical distance (very close and share infrastructure and parks) and very similar social structures. 
+#' it is interesting to note that Canada and US have similar Debt to gdp ratio distribution 
+#' explanations for this are strong economic relationship ie (trade and investments) between the two countries, geographical distance (very close and share infrastructure and parks) and very similar social structures. 
 
 ```{r warning = FALSE, message = FALSE}
 lambda <- BoxCox.lambda(CA)
@@ -151,7 +151,7 @@ print(lambda)
 ```
 
 #' using the box cox method we are able to determine a power transformation needed to stablize the variance and mean.
-the power transformation reduced the variation in the data more than the log transformation
+#' the power transformation reduced the variation in the data more than the log transformation
 
 after taking the first diff we still see some trend present in the data the second difference is needed to remove this 
 ```{r warning = FALSE, message = FALSE}
@@ -186,19 +186,19 @@ auto.arima(CA.transformed)
 
 
 #' options
-arima(0,1,3) does not pass normality test
-arima(2,1,0) does not pass normality test
-arima(1,1,2) based on the eacf plot 
-log likelihood = 299.17,  aic = -590.35
-this is the best choice has meets all the requirements we need for an ideal model
+#' arima(0,1,3) does not pass normality test
+#' arima(2,1,0) does not pass normality test
+#' arima(1,1,2) based on the eacf plot 
+#' log likelihood = 299.17,  aic = -590.35
+#' this is the best choice has meets all the requirements we need for an ideal model
 
-there was still trend the dataset at this point
-arima(0,0,3) based on the acf aic = -601.7, log likelihood = 304.85
-Shapiro-Wilk normality test p-value = 0.06137
-Ljung-Box test p-value = 0.3856
-arima(2,0,0) based on the pacf aic = -594.64, log likelihood = 300.32 
-Ljung-Box test p-value = 0.1395
-Shapiro-Wilk normality test p-value = 0.1078
+#' there was still trend the dataset at this point
+#' arima(0,0,3) based on the acf aic = -601.7, log likelihood = 304.85
+#' Shapiro-Wilk normality test p-value = 0.06137
+#' Ljung-Box test p-value = 0.3856
+#' arima(2,0,0) based on the pacf aic = -594.64, log likelihood = 300.32 
+#' Ljung-Box test p-value = 0.1395
+#' Shapiro-Wilk normality test p-value = 0.1078
 
 ```{r warning = FALSE, message = FALSE}
 lambda1 <- BoxCox.lambda(UK)
@@ -217,7 +217,7 @@ print(lambda1)
 # ```
 #the power transformation reduced the variation in the data more than the log transformation note this is a small difference, however, for our purpose the power transformation is the best choice
 
-we need to take the second diff to reduce the present trend even more so.
+#' we need to take the second diff to reduce the present trend even more so.
 
 ```{r warning = FALSE, message = FALSE}
 
@@ -304,9 +304,9 @@ auto.arima(US.transformed2)
 ```
 
 
-#' the log transformation was able to reduce the reduce the variability in data much more than the power transformation
+#' the log transformation was able to reduce the reduce the variability in data much more than the power transformation.
 
-based on eacf plot the best model is arima(0,2,1)
+#' based on eacf plot the best model is arima(0,2,1).
 
 
 
@@ -344,7 +344,7 @@ pacf(CA.transformed)
 ARIMA(1, 1, 2)
 ARIMA(2, 1, 3)
 ARIMA(3, 1, 3)
-the final model we use will be based on the model that provides the best residual analysis results and AICc score.
+#' the final model we use will be based on the model that provides the best residual analysis results and AICc score.
 
 
 ```{r warning = FALSE, message = FALSE}
